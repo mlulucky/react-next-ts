@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import TodoItem from "./TodoItem";
 
 export type Todo = {
@@ -11,7 +11,7 @@ export type Todo = {
 export default function TodoList({
   todos,
   onUpdate,
-	onDelete
+  onDelete,
 }: {
   todos: Todo[];
   onUpdate: (id: number) => void;
@@ -25,6 +25,10 @@ export default function TodoList({
     setSearch(e.target.value);
   };
 
+	useEffect(()=>{
+		console.log("TodoList");
+	})
+
   // 필터링된 todos
   const filterTodos = () => {
     if (search === "") {
@@ -36,9 +40,45 @@ export default function TodoList({
     );
   };
 
+  type TodosCount = {
+    allCount: number;
+    doneCount: number;
+    leftCount: number;
+  };
+  // todo - 할일 개수 => 전체 / 완료 / 남은 개수
+  const todosCount = (todos: Todo[]): TodosCount => {
+		console.log("todosCount 호출");
+		// todos 가 바뀌지 않는다면 재연산 할 필요가 없음
+		// 연산 -> 값을 반환
+    const allCount = todos.length;
+    const doneCount = todos.filter((todo) => todo.isDone).length; // 배열의 모든 요소를 순환
+    const leftCount = allCount - doneCount;
+		
+    return { allCount, doneCount, leftCount }; 
+  };
+
+	// 잘못된 예)
+	// useMemo(()=>{ 함수명() },[변경조건]) : 함수실행O, 반환값 반환X
+	// -> 해결책) 반환값 명시 - return 키워드를 명시
+	// useMemo(()=>{return 함수명() }, [변경조건]) == useMemo(()=> 함수명(), [변경조건]);
+
+	// useMemo(함수명(),[변경조건]) : 함수 즉시실행 및 결과가 useMemo 의 인자가 됨. (하지만 useMemo 는 첫번째 인자로 함수를 받아야하므로 에러)
+	
+	// 🍒 useMemo : 첫번째 인자로 함수를 받고, 함수는 값을 반환해야함.
+	// useMemo(()=> 함수명(),[변경조건]) > 함수가 반환하는 값을 반환
+
+
+
+  const { allCount, doneCount, leftCount } = useMemo(()=>todosCount(todos), [todos]);
+
   return (
     <div className="TodoList">
       <h2>Todos</h2>
+      <div>
+        <span>전체할일: {allCount}</span>
+        <span> 완료한일: {doneCount}</span>
+        <span> 남은일: {leftCount}</span>
+      </div>
       <input
         value={search}
         onChange={onSearchHandler}
@@ -46,7 +86,12 @@ export default function TodoList({
       />
       <div className="todos_wrapper">
         {filterTodos().map((todo) => (
-          <TodoItem key={todo.id} {...todo} onUpdate={onUpdate} onDelete={onDelete}/>
+          <TodoItem
+            key={todo.id}
+            {...todo}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+          />
         ))}
       </div>
     </div>
