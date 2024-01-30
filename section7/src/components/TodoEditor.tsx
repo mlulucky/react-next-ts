@@ -1,11 +1,14 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, memo, useEffect, useRef, useState } from "react";
 
-export default function TodoEditor({onCreate}:{onCreate: (content: string) => void}) {
+function TodoEditor({onCreate}:{onCreate: (content: string) => void}) {
 	const [content, setContent] = useState("");
 	const inputRef = useRef<HTMLInputElement>(null);
 	const onChangeContent = (e: ChangeEvent<HTMLInputElement>) => {
 		setContent(e.target.value);
 	}
+	useEffect(()=>{
+		console.log("TodoEditor");
+	});
 
 	const todoCreate = () => {
 		if(content==="") {
@@ -36,3 +39,5 @@ export default function TodoEditor({onCreate}:{onCreate: (content: string) => vo
 		</div>
 	)
 }
+
+export default memo(TodoEditor);

@@ -1,15 +1,23 @@
+import { memo } from "react";
 import { Todo } from "./TodoList";
 
-export default function TodoItem({ id, isDone, content, createDate, onUpdate, onDelete }: Todo & {onUpdate: (id: number)=> void, onDelete: (id: number)=> void}) {
-	const onChangeUpdate = () => {
-		onUpdate(id);
-	}
+function TodoItem({
+  id,
+  isDone,
+  content,
+  createDate,
+  onUpdate,
+  onDelete,
+}: Todo & { onUpdate: (id: number) => void; onDelete: (id: number) => void }) {
+  const onChangeUpdate = () => {
+    onUpdate(id);
+  };
 
-	const onClickDelete = () => {
-		onDelete(id);
-	}
+  const onClickDelete = () => {
+    onDelete(id);
+  };
 
-	return (
+  return (
     <div className="TodoItem">
       <input onChange={onChangeUpdate} type="checkbox" checked={isDone} />
       <span className="content">{content}</span>
@@ -18,3 +26,5 @@ export default function TodoItem({ id, isDone, content, createDate, onUpdate, on
     </div>
   );
 }
+
+export default memo(TodoItem); // 최적화된 컴포넌트를 반환
