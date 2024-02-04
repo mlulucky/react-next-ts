@@ -1,5 +1,6 @@
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 import TodoItem from "./TodoItem";
+import { TodoStateContext } from "../TodoContext";
 
 export type Todo = {
   id: number;
@@ -8,15 +9,7 @@ export type Todo = {
   createDate: number;
 };
 
-export default function TodoList({
-  todos,
-  onUpdate,
-  onDelete,
-}: {
-  todos: Todo[];
-  onUpdate: (id: number) => void;
-  onDelete: (id: number) => void;
-}) {
+export default function TodoList() {
   // 검색어 기능
   // input 창에 입력한 값을 할일의 텍스트가 포함하는지 체크
   // 값이 같은지 체크 -> 값을 저장해둬야함 & 값에 따라서 화면 렌더링이 달라짐 -> state
@@ -28,6 +21,8 @@ export default function TodoList({
 	useEffect(()=>{
 		console.log("TodoList");
 	})
+
+	const todos = useContext(TodoStateContext);
 
   // 필터링된 todos
   const filterTodos = () => {
@@ -89,8 +84,6 @@ export default function TodoList({
           <TodoItem
             key={todo.id}
             {...todo}
-            onUpdate={onUpdate}
-            onDelete={onDelete}
           />
         ))}
       </div>

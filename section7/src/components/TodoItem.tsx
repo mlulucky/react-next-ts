@@ -1,14 +1,16 @@
-import { memo } from "react";
+import { memo, useContext } from "react";
 import { Todo } from "./TodoList";
+import { TodoDispatchContext } from "../TodoContext";
 
 function TodoItem({
   id,
   isDone,
   content,
   createDate,
-  onUpdate,
-  onDelete,
-}: Todo & { onUpdate: (id: number) => void; onDelete: (id: number) => void }) {
+}: Todo) {
+
+	const {onUpdate, onDelete} = useContext(TodoDispatchContext);
+
   const onChangeUpdate = () => {
     onUpdate(id);
   };

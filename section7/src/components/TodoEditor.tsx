@@ -1,11 +1,18 @@
-import { ChangeEvent, memo, useEffect, useRef, useState } from "react";
+import { ChangeEvent, memo, useContext, useEffect, useRef, useState } from "react";
+import { TodoDispatchContext } from "../TodoContext";
 
-function TodoEditor({onCreate}:{onCreate: (content: string) => void}) {
+function TodoEditor() {
 	const [content, setContent] = useState("");
 	const inputRef = useRef<HTMLInputElement>(null);
 	const onChangeContent = (e: ChangeEvent<HTMLInputElement>) => {
 		setContent(e.target.value);
 	}
+
+	// 구조분해 할당 // Context 로 데이터를 전달받음
+	const {onCreate} = useContext(TodoDispatchContext);
+	// useContext(컨텍스트)
+	// -> 어떤 컨텍스트로 부터 데이터를 불러올건지를 지정
+
 	useEffect(()=>{
 		console.log("TodoEditor");
 	});
